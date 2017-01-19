@@ -939,23 +939,10 @@ ngx_http_output_forbidden_page(ngx_http_request_ctx_t *ctx,
   }
 
   /*
-  ** If we shouldn't block the request,
-  ** but a log score was reached, stop.
-  */
-  if (ctx->log && !ctx->block)
-    return (NGX_DECLINED);
-  /*
-  ** If we are in learning without post_action and without drop
-  ** stop here as well.
-  */
-  if (ctx->learning && !ctx->post_action && !ctx->drop)
-    return (NGX_DECLINED);
-  /*
   ** add headers with original url
   ** and arguments, as well as
   ** the first fragment of log
   */
-
 
   #define NAXSI_HEADER_ORIG_URL "x-orig-url"
   #define NAXSI_HEADER_ORIG_ARGS "x-orig-args"
@@ -1001,6 +988,19 @@ ngx_http_output_forbidden_page(ngx_http_request_ctx_t *ctx,
     h->value.data = denied_args.data;
     h->hash = 1;
   }
+
+  /*
+  ** If we shouldn't block the request,
+  ** but a log score was reached, stop.
+  */
+  if (ctx->log && !ctx->block)
+    return (NGX_DECLINED);
+  /*
+  ** If we are in learning without post_action and without drop
+  ** stop here as well.
+  */
+  if (ctx->learning && !ctx->post_action && !ctx->drop)
+    return (NGX_DECLINED);
 
   if (ctx->learning && !ctx->drop) {
     if (ctx->post_action) {
